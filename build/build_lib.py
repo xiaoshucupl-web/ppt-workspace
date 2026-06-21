@@ -309,6 +309,7 @@ def build_deck(meta, slides, out_path):
     prs.slide_height = SH
     page = 0
     for sp in slides:
+        page += 1                      # 页码＝PowerPoint 实际页序（含封面/分节页）
         t = sp["type"]
         if t == "title":
             slide_title(prs, meta["course"], sp["tag"], sp["title"], sp["subtitle"],
@@ -316,7 +317,6 @@ def build_deck(meta, slides, out_path):
         elif t == "section":
             slide_section(prs, sp["no"], sp["title"], sp.get("points"))
         else:
-            page += 1
             kicker = sp.get("kicker", meta["kicker"])
             if t == "content":
                 slide_content(prs, kicker, sp["title"], sp["items"], page,
