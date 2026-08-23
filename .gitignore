@@ -1,0 +1,4 @@
+node_modules/
+build/out/*.pdf
+build/out/*.jpg
+work/
