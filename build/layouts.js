@@ -563,9 +563,13 @@ async function stat(s, d) {
     // 数字与中文单位分开排版，避免中文回退到西文字体
     const raw = String(items[i].n);
     const m = raw.match(/^([\d.,+%\-—/]+)\s*(.*)$/);
-    const numPart = m ? m[1] : raw, unit = m ? m[2] : '';
-    const np = Math.min(58, Math.max(26, (sw * 72 * 1.35) / Math.max(2, numPart.length + unit.length * 1.6)));
-    const runs = [{ text: numPart, options: { fontSize: np, bold: true, color: dark ? C.bronze : tone[1], fontFace: F.num } }];
+    const numeric = !!m;
+    const numPart = numeric ? m[1] : raw, unit = numeric ? m[2] : '';
+    // 数字用大字号；若"数字位"实为中文标签，则按框宽高自适应，避免折行压住下方标签
+    const np = numeric
+      ? Math.min(56, Math.max(26, (sw * 72 * 1.35) / Math.max(2, numPart.length + unit.length * 1.6)))
+      : autoSize([raw], sw, 1.05, 34, 17, 1.2, 0, 0);
+    const runs = [{ text: numPart, options: { fontSize: np, bold: true, color: dark ? C.bronze : tone[1], fontFace: numeric ? F.num : F.cnB } }];
     if (unit) runs.push({ text: unit, options: { fontSize: Math.round(np * 0.52), bold: true, color: dark ? C.bronze : tone[1], fontFace: F.cnB } });
     s.addText(runs, { x: x + 0.2, y: y0 + 0.36, w: cw - 0.4, h: 1.12, margin: 0, align: 'center', valign: 'middle' });
     let cy = y0 + 1.62;

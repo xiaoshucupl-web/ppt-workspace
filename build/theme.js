@@ -42,7 +42,9 @@ function cjkLen(s) {
 function estLines(text, widthIn, fontPt, padIn = 0.16) {
   const usable = Math.max(0.4, widthIn - padIn * 2) * 72;
   const perLine = Math.max(1, Math.floor(usable / fontPt));
-  return Math.max(1, Math.ceil(cjkLen(text) / perLine));
+  // 显式换行符各自另起一行，必须分段计算，否则多行法条会被低估而溢出
+  return String(text).split('\n')
+    .reduce((n, seg) => n + Math.max(1, Math.ceil(cjkLen(seg) / perLine)), 0);
 }
 
 // 在给定盒子里为一组文本挑一个不溢出的字号
